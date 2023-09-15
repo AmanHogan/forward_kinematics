@@ -5,11 +5,10 @@
 #define M_PI 3.1415927
 #endif
 
-// Rotation Matricies: CounterClockwise
+// Counter-clockwise Rotation Matricies: 
 // RX = {{1, 0, 0}, {0, cos(theta[]), -sin(theta[])}, {0, sin(theta[]), cos(theta[])}}
 // RY = {{cos(theta[]), 0, sin(theta[])}, {0, 1, 0}, {-sin(theta[]), 0, cos(theta[])}}
 // RZ = {{cos(theta[]), -sin(theta[]), 0}, {sin(theta[]), cos(theta[]), 0}, {0, 0, 1}}
-
 
 /**
  * @param x*
@@ -156,6 +155,8 @@ void fwd_kin(double theta[6], double x[3])
     double T2B[4][4];
     double T3B[4][4];
     double TTB[4][4];
+
+    // Multiply
     multiplyMatrices(T0B, T10, T1B);
     multiplyMatrices(T1B, T21, T2B);
     multiplyMatrices(T2B, T32, T3B);
@@ -167,14 +168,3 @@ void fwd_kin(double theta[6], double x[3])
     x[2] = TTB[2][3];
 
 }
-
-
-
-
-
-
-
-
-
-
-
