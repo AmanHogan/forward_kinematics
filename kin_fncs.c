@@ -166,7 +166,6 @@ void fwd_kin(double theta[6], double x[3])
     x[1] = TTB[1][3];
     x[2] = TTB[2][3];
 
-
 }
 
 
