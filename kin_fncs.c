@@ -5,6 +5,12 @@
 #define M_PI 3.1415927
 #endif
 
+// Author: Aman Hogan
+// C Library Reference: Manfred Huber
+// Copyright: The University of Texas at Arlington
+// 2238-CSE-4360-001 : Robotics
+
+
 /**
  * Prints Jacobian Matrix
  * @param J[3][4] Jacobian Matrix
@@ -57,46 +63,63 @@ void fwd_kin(double theta[6], double x[3])
 **/
 void inv_kin(double x[3], double theta[6]) 
 {
-   // Distances between joints: D[1]: -.04 | D[2]: .040 | D[3]: -.040 | D[4]: .040 |
+    // Distances between joints: D[1]: -.04 | D[2]: .040 | D[3]: -.040 | D[4]: .040 |
     double D[6] = {0, -0.040, 0.040, -0.040, -0.040, 0 };
 
-   // Lengths between joints: L[0]: -.04 | L[1]: .040 | L[2]: -.040 | L[3]: .040 |
+    // Lengths between joints: L[0]: -.04 | L[1]: .040 | L[2]: -.040 | L[3]: .040 |
     double L[4] = {0.250, .200, .200, .150};
 
-    // Find constant offset of theta[0] | Theta[0] = arcsin((d3)/sqrt(x^2 + y^2))
-    double offset = asin((D[3])/(sqrt(pow((x[0]),2) + pow((x[1]), 2))));
+    // Find offset of theta[0] then find theta[0] using offset
+    // offset = arcsin(d3/sqrt(x^2 + y^2))
+    // theta[0] = arctan(y/x) - offset
+    double alpha = asin(D[3]/sqrt(pow(x[0], 2) + pow(x[1],2)));
+    theta[0]  = atan(x[1]/x[0]) - alpha;
+
+    // If theta[0] < 0, make sure it goes in the counterclockwise
+    if (x[0] < 0)
+        theta[0] = theta[0] + M_PI;
     
-    // Find theta[0] | Theta[0] = invertan(y/x) - offset
-    theta[0] = atan(x[1]/x[0]) - offset;
+    // Transform end effector to new coordinates 
+    double x_1 = x[0] - (D[4]*cos(theta[0])) + (D[3]*sin(theta[0]));
+    double y_1 = x[1] - (D[3]*cos(theta[0])) - (D[4]*sin(theta[0])); 
+    double z_1 = x[2] + (L[3]) - (L[0]);
 
-    // Move base frame relative to wrist
-    double x_1[3];
-    x_1[0] = x[0] + D[2] * sin(theta[0]) ;
-    x_1[1] = x[1] - D[2] * cos(theta[0]); 
-    x_1[2] = x[2] - L[0];
+    // Distance to the new frame created in XY plane
+    // Align z with negative z axis
+    double x_2 = sqrt(pow(x_1,2)+pow(y_1,2));
+    double y_2 = -z_1;
 
-    // Move tool frame to wrist
-    double x_2[3];
-    x_2[0] = x_1[0] - D[4] * cos(theta[0]);
-    x_2[1] = x_1[1] - D[4] * sin(theta[0]);
-    x_2[2] = x_1[2] + L[3];
+    // Distance from the origin
+    double hyp = sqrt(pow(x_2,2) + pow(y_2,2));
 
-    // Derive 3DOF Triangle
-    double x_3[3];
-    x_3[0] = sqrt((pow(x_2[0], 2)) + (pow(x_2[1],2)));
-    x_3[1] = -x_2[2];
+    // Intermediate angle offset of theta[1]
+    double beta = atan(y_2/x_2); 
+    
+    // Intermediate calculation for theta[2]
+    double theta_2 = (pow(hyp,2) - pow(L[1],2) - pow(L[2],2)) / (2*L[1]*L[2]);
 
-    // Derive Theta[2]
-    double r = sqrt((pow(x_3[0], 2)) + (pow(x_3[1],2)));
-    double beta = atan(x_3[1]/x_3[0]); 
-    theta[2] = acos((pow(r,2) - pow(L[1],2) - pow(L[2], 2)) / (2 * L[1] * L[2]));
+    // Intermediate calculation for theta[1]
+    double gamma = (pow(hyp,2) + pow(L[1],2) - pow(L[2],2)) / (2*hyp*L[1]);
 
-    // Derive Theta[1]
-    double psi = acos((pow(r,2) + pow(L[1],2) - pow(L[2], 2)) / (2 * L[1] * r));
-    theta[1] = beta + psi;
+    // Refine range of gamma to avoid nan
+    while (gamma > 1)
+        gamma = gamma - 2;
+    gamma = acos(gamma);
 
-    // Derive Theta[3]
-    theta[3] = (M_PI/2) - theta[1] - theta[2];
+    // Refine range of theta[2] to avoid nan
+    while (theta_2 > 1)
+        theta_2 = theta_2 - 2;
+    theta[2] = acos(theta_2);
+
+    // Theta[1] can have two possible values
+    // Choose correct value based on theta[2]
+    if (theta[2] >= 0)
+        theta[1] = beta - gamma;
+    else
+        theta[1] = beta + gamma;
+    
+    // Sum of angles property
+    theta[3] = (M_PI/2) - (theta[1]) - (theta[2]);
 }
 
 void jacobian(double theta[6])
