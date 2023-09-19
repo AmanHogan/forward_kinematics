@@ -78,28 +78,28 @@ void inv_kin(double x[3], double theta[6])
     // If theta[0] < 0, make sure it goes in the counterclockwise
     if (x[0] < 0)
         theta[0] = theta[0] + M_PI;
-    
-    // Transform end effector to new coordinates 
+
+    // Get position of wrist relative to the shoulder frame
+    // Now the Wrist is aligned with the Base Frame
     double x_1 = x[0] - (D[4]*cos(theta[0])) + (D[3]*sin(theta[0]));
     double y_1 = x[1] - (D[3]*cos(theta[0])) - (D[4]*sin(theta[0])); 
     double z_1 = x[2] + (L[3]) - (L[0]);
 
-    // Distance to the new frame created in XY plane
-    // Align z with negative z axis
+    // Gives us the 3 DOF in the X-Y plane
     double x_2 = sqrt(pow(x_1,2)+pow(y_1,2));
     double y_2 = -z_1;
 
-    // Distance from the origin
-    double hyp = sqrt(pow(x_2,2) + pow(y_2,2));
+    // Gives us the hypotenuse of the triangle
+    double distance = sqrt(pow(x_2,2) + pow(y_2,2));
 
     // Intermediate angle offset of theta[1]
     double beta = atan(y_2/x_2); 
     
     // Intermediate calculation for theta[2]
-    double theta_2 = (pow(hyp,2) - pow(L[1],2) - pow(L[2],2)) / (2*L[1]*L[2]);
+    double theta_2 = (pow(distance,2) - pow(L[1],2) - pow(L[2],2)) / (2*L[1]*L[2]);
 
     // Intermediate calculation for theta[1]
-    double gamma = (pow(hyp,2) + pow(L[1],2) - pow(L[2],2)) / (2*hyp*L[1]);
+    double gamma = (pow(distance,2) + pow(L[1],2) - pow(L[2],2)) / (2*distance*L[1]);
 
     // Refine range of gamma to avoid nan
     while (gamma > 1)
