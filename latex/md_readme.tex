@@ -1,0 +1,47 @@
+\hypertarget{md_readme_autotoc_md1}{}\doxysection{Project and Summary}\label{md_readme_autotoc_md1}
+\hypertarget{md_readme_autotoc_md2}{}\doxysubsubsection{Assignment description\+: This Homework assignment aims to derive the forward kinematics and a partial inverse kinematic function for a manipulator and implement them in a robot simulator. To do this you are provided with a C library containing the simulator. All your code should be written in the file kin fncs.\+c which contains 2 main functions, fwd kin(theta,x) and inv kin(x, theta). These functions are directly called by the simulator}\label{md_readme_autotoc_md2}
+\hypertarget{md_readme_autotoc_md3}{}\doxysection{Set Up Ubuntu (\+Linux)}\label{md_readme_autotoc_md3}
+To install it under Ubuntu, you need to install a number of extra packages with the development libraries\+: {\ttfamily apt-\/get install build-\/essential} {\ttfamily apt-\/get install xutils-\/dev} {\ttfamily apt-\/get install libxt-\/dev} {\ttfamily apt-\/get install libxaw7-\/dev} Put the tar file on your on your computer and uncompress it. In a terminal\+:
+\begin{DoxyItemize}
+\item Go to the project folder (kin or dyn)\+: {\ttfamily cd $\sim$/$<$path to where you put the file$>$/hwk1\+\_\+\+Linux64/kin}
+\item Build the Makefile (you only have to do this once)\+: {\ttfamily xmkmf}
+\item Compile the project\+: {\ttfamily make}
+\item This will produce a few warnings and show you whether there were errors (ignore the can not build Kinematics.\+man error -\/ this is just that it does not find documentation to build)
+\item Run the executable\+: {\ttfamily ./\+Kinematics} 
+\end{DoxyItemize}\hypertarget{md_readme_autotoc_md4}{}\doxysection{Code Explanation}\label{md_readme_autotoc_md4}
+
+\begin{DoxyEnumerate}
+\item {\bfseries{Function Declarations}}\+:
+\begin{DoxyItemize}
+\item The code declares three functions\+: {\ttfamily print\+\_\+jacobian}, {\ttfamily jacobian}, {\ttfamily fwd\+\_\+kin}, and {\ttfamily inv\+\_\+kin}. These functions are defined later in the code.
+\item These functions are used to calculate and print the Jacobian matrix, perform forward kinematics, and perform inverse kinematics for the robotic arm.
+\end{DoxyItemize}
+\item $\ast$$\ast${\ttfamily fwd\+\_\+kin} Function$\ast$$\ast$\+:
+\begin{DoxyItemize}
+\item This function calculates the forward kinematics of the robotic arm based on joint angles ({\ttfamily theta}) and stores the end-\/effector position in the {\ttfamily x} array.
+\item It uses the arm\textquotesingle{}s geometric parameters and trigonometric calculations to determine the end-\/effector position.
+\end{DoxyItemize}
+\item $\ast$$\ast${\ttfamily inv\+\_\+kin} Function$\ast$$\ast$\+:
+\begin{DoxyItemize}
+\item This function calculates the inverse kinematics of the robotic arm to determine the joint angles ({\ttfamily theta}) needed to reach a specified end-\/effector position ({\ttfamily x}).
+\item It performs mathematical calculations to find the joint angles based on the given end-\/effector position and arm geometry.
+\end{DoxyItemize}
+\item $\ast$$\ast${\ttfamily jacobian} Function$\ast$$\ast$\+:
+\begin{DoxyItemize}
+\item This function calculates the Jacobian matrix for the robotic arm.
+\item The Jacobian matrix relates the rate of change of the end-\/effector\textquotesingle{}s position to the rates of change of the joint angles.
+\item It computes the Jacobian matrix elements using partial derivatives with respect to joint angles.
+\end{DoxyItemize}
+\item $\ast$$\ast${\ttfamily print\+\_\+jacobian} Function$\ast$$\ast$\+:
+\begin{DoxyItemize}
+\item This function is responsible for printing the Jacobian matrix to the console.
+\item It takes the Jacobian matrix as input and formats and prints its elements.
+\end{DoxyItemize}
+\end{DoxyEnumerate}
+
+Overall, this code provides a framework for working with a robotic arm, allowing you to perform forward kinematics to calculate the end-\/effector position given joint angles and inverse kinematics to determine joint angles given an end-\/effector position. Additionally, it computes and prints the Jacobian matrix, which is essential for tasks like velocity control and trajectory planning in robotics.\hypertarget{md_readme_autotoc_md5}{}\doxysection{Contributions}\label{md_readme_autotoc_md5}
+
+\begin{DoxyItemize}
+\item Author\+: Aman Hogan
+\item Professor\+: Manfred Huber, The University of Texas at Arlington 
+\end{DoxyItemize}
