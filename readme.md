@@ -44,6 +44,10 @@ In a terminal:
 
 Overall, this code provides a framework for working with a robotic arm, allowing you to perform forward kinematics to calculate the end-effector position given joint angles and inverse kinematics to determine joint angles given an end-effector position. Additionally, it computes and prints the Jacobian matrix, which is essential for tasks like velocity control and trajectory planning in robotics.
 
+# Documentation
+- To view the documentation, you can go inside the html folder and open the `index.html`, whihc should open a doxygen page.
+
+
 # Contributions
 - Author:  Aman Hogan
 - Professor: Manfred Huber, The University of Texas at Arlington
